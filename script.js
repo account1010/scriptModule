@@ -23,7 +23,7 @@ const time = {
 
 //receiveData command
 async function receiveData(url) {
-    if (typeof url === "string") {
+    if (typeof url === "string"){
         try{
             const data = await fetch(url);
             const response = await data.text()
@@ -36,17 +36,42 @@ async function receiveData(url) {
 }
 
 //write command
-function write(...data) {
-    const result = data.map(item => {
-        if (typeof item === 'symbol') {
-            return `Symbol(${item.description || 'Symbol'})`;
-        } else if (item === null) {
-            return 'null';
-        } else if (typeof item === 'function') {
-            return 'function';
-        } else {
-            return item;
+
+const write = {
+    info:function(...data){
+        console.log(...data);
+    },
+    warn:function(...data){
+        console.warn(...data);
+    },
+    error:function(data){
+        throw new Error(data)
+    }
+}
+
+//loop command
+const loop = {
+    arrayEach: function (array, callbackfn){
+        if (Array.isArray(array)) {
+            array.forEach((item, index) => {
+                callbackfn(item, index);
+            });
         }
-    });
-    console.log(result.join(" "));
+    },
+    objectEach: function(object,callbackfn){
+        for(let i in object){
+            let b = object[`${i}`]
+            callbackfn(i,b)
+        }
+    }
+};
+
+function download(data,name,langue){
+    if(typeof data == "string" || (typeof data == "number" && !isNaN(data)) && typeof langue == "string" && typeof name == "string"){
+        const blob = new Blob([data],{type:'text/plain'})
+        const create = document.createElement("a")
+        create.href = URL.createObjectURL(blob)
+        create.download = name+"."+langue
+        create.click()
+    }
 }
