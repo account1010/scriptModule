@@ -48,6 +48,5 @@ function write(...data) {
             return item;
         }
     });
-    console.log(result);
     console.log(result.join(" "));
 }
